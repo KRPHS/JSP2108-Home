@@ -23,7 +23,7 @@
       </li>
 <%    if(level != 99 && level !=1) { %>
       <li class="nav-item">
-        <a class="nav-link" href="#">BOARD</a>
+        <a class="nav-link" href="<%=request.getContextPath()%>/boList.bo">BOARD</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">PDS</a>
@@ -35,6 +35,18 @@
 		      <a class="dropdown-item" href="<%=request.getContextPath()%>/URLMapping.url">URL(확장자)매핑</a>
 		      <a class="dropdown-item" href="<%=request.getContextPath()%>/URLMapping.url2">URL(확장자)매핑2</a>
 		      <a class="dropdown-item" href="<%=request.getContextPath()%>/password">비밀번호암호화</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/el1.st">EL학습1</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/el2.st">EL학습2</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/jstl1.st">JSTL학습1</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/jstl2.st">JSTL학습2</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/jstl3.st">JSTL학습3</a>
+		    </div>
+      </li>
+      <li class="nav-item dropdown mr-2">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Study2</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/ajax1.st">AJax연습</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/ajax2.st">AJax연습2</a>
 		    </div>
       </li>
 <%    } %>
@@ -45,7 +57,7 @@
 			      <a class="dropdown-item" href="<%=request.getContextPath()%>/memMain.mem">회원방</a>
 			      <a class="dropdown-item" href="<%=request.getContextPath()%>/memUpdate.mem">회원정보변경</a>
 <%          if(level != 1) { %>
-			      <a class="dropdown-item" href="<%=request.getContextPath()%>/memList.mem">회원리스트</a>
+			      <a class="dropdown-item" href="<%=request.getContextPath()%>/memList.ad">회원리스트</a>
 <%          }
             if(level != 0) { %>
 			      <a class="dropdown-item" href="javascript:memberDel()">회원탈퇴</a>
@@ -59,7 +71,7 @@
 		        <a class="nav-link" href="<%=request.getContextPath()%>/memLogOut.mem">LogOut</a>
 	      </li>
 <%    } else { %>
-	      <li>
+	      <li class="nav-item">
 	  	      <a class="nav-link" href="<%=request.getContextPath()%>/memLogin.mem">Login</a>
 	  	  </li>
 	      <li class="nav-item">
