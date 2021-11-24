@@ -170,4 +170,195 @@ public class BoardDAO {
 			getConn.pstmtClose();
 		}
 	}
+
+	public void setGoodUpdate2(int idx, int flag) {
+		try {
+			if(flag == 1) {
+				sql = "update board set good = good+1 where idx = ?";
+			} else {
+				sql = "update board set good = good-1 where idx = ?";
+			}
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, idx);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.pstmtClose();
+		}
+	}
+
+	// 최근글 개수 가져오기
+	public int totRecCntLately(int lately) {
+		int totRecCnt = 0;
+		try {
+			sql = "select count(*) from board where wDate > date_sub(now(), interval ? day)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, lately);
+			rs = pstmt.executeQuery();
+			rs.next();
+			totRecCnt = rs.getInt(1);
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.rsClose();
+		}
+		return totRecCnt;
+	}
+
+	// 최근 게시글 보기
+	public List<BoardVO> getBoardListLately(int startIndexNo, int pageSize, int lately) {
+		List<BoardVO> vos = new ArrayList<BoardVO>();
+		try {
+			sql = "select * from board where wDate > date_sub(now(), interval ? day) order by idx desc limit ?,?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, lately);
+			pstmt.setInt(2, startIndexNo);
+			pstmt.setInt(3, pageSize);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				vo = new BoardVO();
+				vo.setIdx(rs.getInt("idx"));
+				vo.setNickName(rs.getString("nickName"));
+				vo.setTitle(rs.getString("title"));
+				vo.setEmail(rs.getString("email"));
+				vo.setHomePage(rs.getString("homePage"));
+				vo.setContent(rs.getString("content"));
+				
+				// 날짜를 24시간제로 체크하기위해서 사용자정의메소드로 만든 timeDiff()를 사용한다.
+				vo.setwDate(rs.getString("wDate"));   // 만약 wDate가 날짜타입일경우
+				vo.setwCdate(rs.getString("wDate"));  // 날짜타입 wDate를 문자타입 wCdate로 저장후
+				TimeDiff td = new TimeDiff();
+				vo.setwNdate(td.timeDiff(vo.getwCdate()));  // 문자타입 wCdate를 timeDiff()메소드 인자값으로 보내어서 오늘시간과 계산하여 시간차를 돌려받는다.
+				
+				vo.setReadNum(rs.getInt("readNum"));
+				vo.setHostIp(rs.getString("hostIp"));
+				vo.setGood(rs.getInt("good"));
+				vo.setMid(rs.getString("mid"));
+				
+				vos.add(vo);
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.rsClose();
+		}
+		return vos;
+	}
+
+	// 게시글 수정처리
+	public int setBoUpdateOk(BoardVO vo) {
+		int res = 0;
+		try {
+			sql = "update board set title=?, email=?, homePage=?, content=?, hostIp=? where idx=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getTitle());
+			pstmt.setString(2, vo.getEmail());
+			pstmt.setString(3, vo.getHomePage());
+			pstmt.setString(4, vo.getContent());
+			pstmt.setString(5, vo.getHostIp());
+			pstmt.setInt(6, vo.getIdx());
+			pstmt.executeUpdate();
+			res = 1;
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.pstmtClose();
+		}
+		return res;
+	}
+
+	// 이전글/당므글 처리하기
+	public BoardVO preNextSearch(String str, int idx) {
+		vo = new BoardVO();
+		try {
+			if(str.equals("pre")) {
+				sql = "select * from board where idx < ? order by idx desc limit 1";
+			} else {
+				sql = "select * from board where idx > ? limit 1";
+			}
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, idx);
+			rs = pstmt.executeQuery();
+			
+			if(str.equals("pre") && rs.next()) {
+				vo.setPreIdx(rs.getInt("idx"));
+				vo.setPreTitle(rs.getString("title"));
+			} else if(str.equals("next") && rs.next()) {
+				vo.setNextIdx(rs.getInt("idx"));
+				vo.setNextTitle(rs.getString("title"));
+			} else {
+				vo.setPreIdx(0);
+				vo.setNextIdx(0);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.rsClose();
+		}
+		return vo;
+	}
+
+	// 검색기에 입력된 검색어로 검색된 자료의 개수를 구한다.
+	public int totRecCnt(String search, String searchString) {
+		int totRecCnt = 0;
+		try {
+			sql = "select count(*) from board where "+search+" like ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+searchString+"%");
+			rs = pstmt.executeQuery();
+			rs.next();
+			totRecCnt = rs.getInt(1);
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.rsClose();
+		}
+		return totRecCnt;
+	}
+
+	// 검색기 자료 검색 처리 부분
+	public List<BoardVO> getBoardSearch(String search, String searchString, int startIndexNo, int pageSize) {
+		List<BoardVO> vos = new ArrayList<BoardVO>();
+		try {
+			sql = "select * from board where "+search+" like ? order by idx desc limit ?,?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+searchString+"%");
+			pstmt.setInt(2, startIndexNo);
+			pstmt.setInt(3, pageSize);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				vo = new BoardVO();
+				vo.setIdx(rs.getInt("idx"));
+				vo.setNickName(rs.getString("nickName"));
+				vo.setTitle(rs.getString("title"));
+				vo.setEmail(rs.getString("email"));
+				vo.setHomePage(rs.getString("homePage"));
+				vo.setContent(rs.getString("content"));
+				
+				// 날짜를 24시간제로 체크하기위해서 사용자정의메소드로 만든 timeDiff()를 사용한다.
+				vo.setwDate(rs.getString("wDate"));   // 만약 wDate가 날짜타입일경우
+				vo.setwCdate(rs.getString("wDate"));  // 날짜타입 wDate를 문자타입 wCdate로 저장후
+				TimeDiff td = new TimeDiff();
+				vo.setwNdate(td.timeDiff(vo.getwCdate()));  // 문자타입 wCdate를 timeDiff()메소드 인자값으로 보내어서 오늘시간과 계산하여 시간차를 돌려받는다.
+				
+				vo.setReadNum(rs.getInt("readNum"));
+				vo.setHostIp(rs.getString("hostIp"));
+				vo.setGood(rs.getInt("good"));
+				vo.setMid(rs.getString("mid"));
+				
+				vos.add(vo);
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("SQL에러 :: " + e.getMessage());
+		} finally {
+			getConn.rsClose();
+		}
+		return vos;
+	}
 }

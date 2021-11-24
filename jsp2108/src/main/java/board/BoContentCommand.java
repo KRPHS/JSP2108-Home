@@ -16,6 +16,10 @@ public class BoContentCommand implements BoardInterface {
 		int pag = request.getParameter("pag") == null ? 1 : Integer.parseInt(request.getParameter("pag"));
 		int pageSize = request.getParameter("pageSize") == null ? 5 : Integer.parseInt(request.getParameter("pageSize"));
 		
+		// 검색폼에서 값이 넘어올경우
+		String sw = request.getParameter("sw")==null?"": request.getParameter("sw");
+		request.setAttribute("sw", sw);
+		
 		BoardDAO dao = new BoardDAO();
 		
 		// 조회수 증가처리(조회수 중복방지)
@@ -38,6 +42,10 @@ public class BoContentCommand implements BoardInterface {
 		request.setAttribute("pag", pag);
 		request.setAttribute("pageSize", pageSize);
 		
+		// '이전글(preVO)' / '다음글(nextVO)' 처리하기
+		BoardVO preVO = dao.preNextSearch("pre", idx);
+		BoardVO nextVO = dao.preNextSearch("next", idx);
+		request.setAttribute("preVO", preVO);
+		request.setAttribute("nextVO", nextVO);
 	}
-
 }

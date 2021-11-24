@@ -14,6 +14,39 @@
   		var ans = confirm('게시글을 삭제하시겠습니까?');
   		if(ans) location.href="${ctp}/boDelete.bo?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}";
   	}
+  	function goodCheck2(flag) {
+  		var query = {
+  			idx : ${vo.idx},
+  			flag : flag
+  		}
+  		
+  		$.ajax({
+  			type : "post",
+  			url : "${ctp}/boGood2.bo",
+  			data : query,
+  			success : function() {
+  				location.reload();
+  			}
+  		});
+  	}
+  	function goodCheck3() {
+  		var query = {
+  			idx : ${vo.idx}
+  		}
+  		
+  		$.ajax({
+  			type : "post",
+  			url : "${ctp}/boGood3",
+  			data : query,
+  			success : function(data) {
+  				if(data == "1") {
+  					alert("이미 좋아요를 클릭하셨습니다.")
+  				} else {
+	  				location.reload();
+  				}
+  			}
+  		});
+  	}
   </script>
   <style>
   	th {
@@ -33,7 +66,7 @@
 		<table class="table table-bordered">
 			<tr>
 				<th>글쓴이</th>
-				<td>${vo.nickName } &nbsp;&nbsp; <a href="${ctp }/boGood.bo?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}">👍(${vo.good })</a></td>
+				<td>${vo.nickName } &nbsp;&nbsp; <a href="${ctp }/boGood.bo?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}&sw=search">👍(${vo.good })</a></td>
 				<th>글쓴날짜</th>
 				<td>${fn:substring(vo.wDate, 0, 19) }</td>
 			</tr>
@@ -53,22 +86,47 @@
 				<td>${vo.hostIp }</td>
 			</tr>
 			<tr>
+				<td colspan="4"><a href="javascript:goodCheck2(1)">👍</a>(${vo.good })<a href="javascript:goodCheck2(-1)">👎</a></td>
+			</tr>
+			<tr>
 				<th>글제목</th>
-				<td colspan="3">${vo.title }</td>
+				<td colspan="3">${vo.title }<a href="javascript:goodCheck3()">💯(${vo.good })</a></td>
 			</tr>
 			<tr>
 				<th>글내용</th>
 				<td colspan="3" style="height: 200px;">${fn:replace(vo.content, newLine, "<br>") }</td>
 			</tr>
 			<tr>
-				<td colspan="4" class="text-center"><input type="button" value="돌아가기" onclick="location.href='${ctp}/board/boList.bo?pag=${pag }&pageSize=${pageSize }';">
-					<c:if test="${sMid == vo.mid }">
-						<input type="button" value="수정하기" onclick="location.href='${ctp}/'">
-						<input type="button" value="삭제하기" onclick="delCheck()">
+				<td colspan="4" class="text-center">
+					<c:if test="${sw != 'search' }">
+						<input type="button" value="돌아가기" onclick="location.href='${ctp}/board/boList.bo?pag=${pag }&pageSize=${pageSize }';">
+						<c:if test="${sMid == vo.mid }">
+							<input type="button" value="수정하기" onclick="location.href='${ctp}/boUpdate.bo?idx=${vo.idx }&pag=${pag }&pageSize=${pageSize }';">
+							<input type="button" value="삭제하기" onclick="delCheck()">
+						</c:if>
+					</c:if>
+					<c:if test="${sw == 'search' }">
+						<input type="button" value="돌아가기" onclick="history.back()">
 					</c:if>
 				</td>
 			</tr>
 		</table>
+		<br>
+		<!-- 이전글/다음글 처리 -->
+		<c:if test="${sw != 'search'}">
+			<table class="table table-borderless">
+				<tr>
+					<td>
+						<c:if test="${nextVO.nextIdx != 0 }">
+							<b>👆다음글</b>   <a href="${ctp }/boContent.bo?idx=${nextVO.nextIdx}&pag=${pag}&pageSize=${pageSize}">${nextVO.nextTitle }</a><br>
+						</c:if>
+						<c:if test="${preVO.preIdx != 0 }">
+							<b>👇이전글</b>   <a href="${ctp }/boContent.bo?idx=${preVO.preIdx}&pag=${pag}&pageSize=${pageSize}">${preVO.preTitle }</a><br>
+						</c:if>
+					</td>
+				</tr>
+			</table>
+		</c:if>
   </div>
   <br>
   

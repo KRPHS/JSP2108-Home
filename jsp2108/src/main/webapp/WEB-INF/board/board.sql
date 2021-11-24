@@ -19,4 +19,8 @@ create table board(
 
 select * from board;
 
+select * from board where idx = 8;
+select * from board where idx < 8 order by idx desc limit 1;
+select * from board where idx > 8 limit 1;
+
 insert into board values (default,'관리맨','게시판 서비스를 시작합니다','qgt0310@naver.com','naver.com', '이곳은 게시판입니다. 좋은글 많이 부탁드려요',default,default,'218.236.203.146',default,'admin')
