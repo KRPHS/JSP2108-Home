@@ -16,6 +16,7 @@
 		<p><a href="${ctp}/adMemberList.ad?level=1">신규 가입자(<font color="red"><b>${newMember }</b></font>건)</a></p>
 		<hr>
 		<p><a href="#">최근 게시글(<font color="red"><b>xx</b></font>건)</a></p>
+		<p><a href="#">최근 게시글의 댓글(<font color="red"><b>xx</b></font>건)</a></p>
 		<hr>
 		<p><a href="#">최근 방목록(<font color="red"><b>xx</b></font>건)</a></p>
 		<hr>

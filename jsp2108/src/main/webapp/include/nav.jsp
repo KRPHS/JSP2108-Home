@@ -47,6 +47,9 @@
 		    <div class="dropdown-menu">
 		      <a class="dropdown-item" href="<%=request.getContextPath()%>/ajax1.st">AJax연습</a>
 		      <a class="dropdown-item" href="<%=request.getContextPath()%>/ajax2.st">AJax연습2</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/pdsTest1.st">PDS연습</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/pdsTest2.st">PDS연습2</a>
+		      <a class="dropdown-item" href="<%=request.getContextPath()%>/pdsTest3.st">PDS연습3</a>
 		    </div>
       </li>
 <%    } %>

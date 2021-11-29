@@ -80,6 +80,22 @@ public class BoardController extends HttpServlet {
 			command.execute(request, response);
 			viewPage += "/boSearch.jsp";
 		}
+		else if(com.equals("/boReplyInput")) {
+			command = new BoReplyInputCommand();
+			command.execute(request, response);
+			viewPage = "/WEB-INF/message/message.jsp";
+		}
+		else if(com.equals("/boReplyUpdateOk")) {
+			command = new BoReplyUpdateOkCommand();
+			command.execute(request, response);
+			return;
+		}
+		else if(com.equals("/boReplyDelete")) {
+			int replyIdx = request.getParameter("replyIdx") == null ? 0 : Integer.parseInt(request.getParameter("replyIdx"));
+			BoardDAO dao = new BoardDAO();
+			dao.setReplyDelete(replyIdx);
+			return;
+		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
 		dispatcher.forward(request, response);
