@@ -16,7 +16,7 @@ public class MemJoinOkCommand implements MemberInterface {
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext application = request.getServletContext();
 		String realPath = application.getRealPath("/data/member"); // 파일 업로드 위치는 ContextPath아래 /data/pdsTest로 한다.
-		int maxSize = 1024*1024*10; // 업로드할 최대 용량은 10Mb로 한다.
+		int maxSize = 1024*1024*2; // 업로드할 최대 용량은 2Mb로 한다.
 		String encoding = "UTF-8";
 		
 		MultipartRequest multipartRequest = new MultipartRequest(request, realPath, maxSize, encoding, new DefaultFileRenamePolicy());

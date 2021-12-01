@@ -22,10 +22,10 @@
 		var fileSize = document.getElementById("fName1").files[0].size;
 		
 		if(uExt != "ZIP" && uExt != "JPG" && uExt != "GIF" && uExt != "PNG" && uExt != "HWP" && uExt != "PPT" && uExt != "PPTX") {
-			alert("업로드 가능한 파일은 ZIP JPG GIF PNG HWP PPT PPTX")
+			alert("업로드 가능한 파일은 ZIP JPG GIF PNG HWP PPT PPTX");
 			return false;
 		} else if(fName.indexOf(" ") != -1) {
-			alert("업로드할 파일명에는 공백을 포함하실수 없습니다.")
+			alert("업로드할 파일명에는 공백을 포함하실수 없습니다.");
 			return false;
 		}
 		
